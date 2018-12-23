@@ -1,0 +1,23 @@
+{
+	"dockerCommand": "docker run -p $dockerPort:$appPort -ti pass/ub bash",
+	"cmds": {
+		"edit": "edit COLLECTION_IDENTIFIER",
+		"view": "view COLLECTION_IDENTIFIER",
+
+		"value": "value COLLECTION_IDENTIFIER PASSWORD_IDENTIFIER",
+		"update": "update COLLECTION_IDENTIFIER PASSWORD_IDENTIFIER NEW_VALUE",
+
+		"replace": "replace COLLECTION_IDENTIFIER PASSWORD_IDENTIFIER FILE_LOC",
+		"remove": "remove COLLECTION_IDENTIFIER PASSWORD_IDENTIFIER FILE_LOC",
+
+		"log": "log ",
+		"help": "help",
+
+		"setup-server": "setup-server COLLECTION_IDENTIFIER PASSWORD_IDENTIFIER NEW_VALUE",
+		"stop-server": "stop-server PORT",
+		"start-server": "start-server PORT"
+	},
+	"enpoints": [
+  	"/password/get"
+	]
+}

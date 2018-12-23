@@ -13,18 +13,22 @@
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.js"></script>
 
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+        <link rel='stylesheet' href='index.css'>
     </head>
 
     <!-- apply our angular app to our site -->
     <body ng-app="routerApp">
-
+      <nav-bar></nav-bar>
         <div id="body">
-            <div ui-view></div> <!-- angular content injected here  -->
+            <div ui-view='main' id='main'></div> <!-- angular content injected here  -->
         </div>
 
 
@@ -34,5 +38,8 @@
             <p>Main Website: <a href="https://revature.com/" target="_blank">Revature.com</a></p>
         </div>
 
-    <script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script><script type="text/javascript" src="index.js"></script></body>
+        <div ui-view='edit'></div>
+
+        <script type="text/javascript" src="index.js"></script>
+      </body>
 </html>

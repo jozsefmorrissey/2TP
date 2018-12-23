@@ -1,0 +1,9 @@
+{
+  "urls": {
+    "Fun": "/test.html",
+    "testJson": "/test.json"
+  },
+  "srefs": {
+    "hello": "std.docker"
+  }
+}

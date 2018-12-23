@@ -1,0 +1,52 @@
+
+trix-editor {
+  margin: 0 20px 0 20px;
+}
+
+#content-editor {
+  position: fixed;
+  border-top-style: solid;
+  width: 100%;
+  bottom: 0;
+  height: 200px;
+  background-color: white;
+  border-width: 1px;
+  border-color: darkgray;
+}
+
+#link-editor {
+  overflow-y: scroll;
+}
+
+#editor-tab-ctn {
+  display: inline-block;
+}
+
+#edit-save-btn {
+  float: right;
+  margin: 8pt;
+  margin-right: 32pt;
+}
+
+#editor-nav {
+  display: flow-root;
+}
+
+trix-toolbggar [data-attribute='code'] {
+  display: none;
+}
+
+.key-input {
+  float: right;
+  margin-right: 50px;
+}
+
+.key-input > input {
+  width: 250px;
+}
+
+.open-edit-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

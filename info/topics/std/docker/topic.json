@@ -1,0 +1,12 @@
+{
+  "index": "<div>\n  <div class='center two-thirds'>\n    <h2>Welcome to docker doc</h2>\n    <a ng-click=\"go('jozsef.bash.confidentalInfo')\">\n      Commands\n    </a>\n    <div class='left'>\n      <div ng-repeat='cmd in cmds'>\n        <b>{{cmd}}</b>\n      </div>\n    </div>\n  </div>\n</div>\n",
+  "config": "{\n  \"cmds\": [\n    \"docker run -p $dockerPort:$appPort -ti pass/ub bash\"\n  ]\n}\n",
+  "internalConfig": "{\n  \"urls\": {\n    \"Fun\": \"/test.html\",\n    \"testJson\": \"/test.json\",\n    \"hello\": \"std.docker\"\n  }\n}\n",
+  "style": "test {\n  overflow: hidden;\n}\n",
+  "keywords": {
+    "-p": "<div>\n  <p>\n    port mapping\n  </p>\n</div>\n",
+    "$appPort": "<div>\n  This variable needs to be the port that the server will be running on\n  within the docker container. This port can be determined by running\n  the following command:\n  <br>\n  <br>\n  sudo ./confidentalInfo.sh value confidentalInfo port\n</div>\n",
+    "$dockerPort": "<div>\n  <p>\n    This is the port the docker container will connect to the application port\n    and expose on your local.\n  </p>\n</div>\n",
+    "docker": "<b>\n  A light weight container utility for isolating and standardizing\n  the environment in which your application runs.\n  <br>\n  <a href='https://docs.docker.com/'>Docker Website</a>\n</b>\n"
+  }
+}

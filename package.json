@@ -1,10 +1,10 @@
 {
-  "name": "app",
+  "name": "hyper-link-web-app",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "webpack-dev-server --watch --progress --colors --hot --inline --port 3000",
+    "start": "node ./mapHtmls.js & webpack-dev-server --watch --progress --colors --hot --inline --port 3000",
     "watch": "webpack --watch",
     "build": "webpack --optimize-minimize"
   },
@@ -23,7 +23,9 @@
     "angular-cookies": "^1.5.8",
     "angular-material": "^1.1.1",
     "angular-messages": "^1.5.8",
+    "angular-trix": "^1.0.2",
     "angular-ui-router": "^1.0.3",
+    "angular-ui-tinymce": "0.0.19",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-loader": "^1.7.1",
@@ -32,6 +34,7 @@
     "eslint-plugin-react": "^7.0.1",
     "fusioncharts": "3.12.0",
     "html-webpack-plugin": "^3.2.0",
+    "jozsef-lib": "^1.1.0",
     "moment": "^2.18.1",
     "raw-loader": "^0.5.1",
     "watchman": "^1.0.0"

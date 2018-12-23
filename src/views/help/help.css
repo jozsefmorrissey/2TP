@@ -1,0 +1,69 @@
+
+.hover-outer {
+  background-color: white;
+  border-style: ridge;
+  border-color: var(--primary-light);
+  border-radius: 10pt;
+}
+
+.hover-inner {
+  padding: 10pt;
+}
+
+.hover-close-btn {
+  float: right;
+  margin: 5pt;
+  border-radius: 25pt;
+  font-weight: bolder;
+  color: var(--primary-light);
+  background-color: var(--primary-dark);
+  border-color: var(--primary-light);
+}
+
+.right-arrow-ctn, .left-arrow-ctn {
+  text-align: right;
+  position: absolute;
+  width:6.5em;
+  top: 3pt;
+}
+.right-arrow-ctn {
+  right: 0pt;
+}
+.left-arrow-ctn {
+  left: 0pt;
+}
+
+.nav-link {
+  overflow: hidden;
+  padding: 2px;
+  direction: rtl;
+  width: 6.5em;
+  font: 1.5em;
+}
+
+.nav-arrow {
+  font-size: 2em;
+}
+
+hover-resource:hover, internal-link:hover, external-link > a:hover{
+  font-style: italic;
+  text-decoration: underline;
+}
+hover-resource:hover {
+  color: green;
+}
+internal-link:hover {
+  color: blue;
+}
+external-link > a:hover {
+  color: purple;
+}
+
+external-link > a {
+  color: black;
+}
+
+.list-inline {
+  width: 100%;
+  margin: auto;
+}

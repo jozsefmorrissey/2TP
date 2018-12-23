@@ -1,0 +1,52 @@
+:root {
+  --primary-light: aquamarine;
+  --primary-dark: black;
+}
+
+.center {
+  text-align: center;
+  justify-content: center;
+}
+
+.left {
+  text-align: left;
+}
+
+.two-thirds {
+    width: 66%;
+    margin: auto;
+}
+
+.link {
+  color: blue;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.warning {
+  color: red;
+}
+
+.keyword-tab {
+  display: inline-flex!important;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.block {
+  display:block;
+}
+
+#footer-wrapper {
+  height: 250px;
+}
+
+.indent {
+  padding-left:  50pt;
+}
