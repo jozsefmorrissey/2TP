@@ -7,12 +7,17 @@
   ],
   "rules": {
     "react/no-unused-prop-types": [2, { "skipShapeProps": true }],
-    "linebreak-style": 0
+    "linebreak-style": 0,
+    "no-bitwise": ["error", { "allow": ["<<", "|="] }]
   },
   "env": {
     "browser": true,
     "node": true,
     "jquery": true,
     "jasmine": true
+  },
+  "globals": {
+    "Exception": false,
+    "angular": false
   }
 }
