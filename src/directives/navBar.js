@@ -1,60 +1,47 @@
-function navBar($window, $timeout, UtilSrvc, stateSrvc) {
-  let width;
-  let element;
-  let scope;
-  let count = 1;
-
-  function go(index) {
-    stateSrvc.go(index);
-  }
-
-  function resize() {
-    if (width !== $window.innerWidth) {
-      width = $window.innerWidth;
-      const maxWidth = width;
-      const button = $($(element).find('.nav-link')[0]).parent();
-      const buttonWidth = button.outerWidth() ? button.outerWidth() : 101;
-      count = 0;
-      let totalWidth = buttonWidth * 2;
-      while (totalWidth < maxWidth) {
-        count += 1;
-        totalWidth += buttonWidth;
-      }
-      if (button.outerWidth() === null) {
-        $timeout(resize, 250);
-      }
-      // $scope.$digest();
+function navBar() {
+  function ctrl($scope, $transitions, $state, configSrvc, errorSrvc, userSrvc, searchSrvc) {
+    function onChange(trans) {
+      $scope.topic = trans && trans.params().topic;
     }
-  }
 
-  function setLinks() {
-    resize();
-    scope.nav.pages = stateSrvc.getRange(count);
-    scope.currIndex = stateSrvc.getIndex();
-  }
+    function updateLogin() {
+      $scope.loggedIn = userSrvc.isLoggedIn();
+    }
 
-  function ctrl($scope, $element) {
-    element = $element;
-    $scope.nav = {};
-    $scope.nav.pages = ['one'];
-    scope = $scope;
+    function search(phrase) {
+      searchSrvc.search(phrase, 0, 25);
+    }
+
+    function go(sref) {
+      $state.go('topic', { topic: sref });
+    }
+
+    function isSref(phrase) {
+      if (!phrase) {
+        return false;
+      }
+      const matches = phrase.match(/[a-zA-Z0-9]*\.[a-zA-Z0-9.]*/);
+      return matches && matches[0].length === phrase.length;
+    }
+
+    function logOut() {
+      userSrvc.logOut();
+    }
+
+    function updateAlert(errors) {
+      $scope.errors = errors;
+    }
+
+    errorSrvc('nav-alert', updateAlert);
+    $scope.logOut = logOut;
+    $scope.isSref = isSref;
     $scope.go = go;
-    setLinks();
-    stateSrvc.onChange(setLinks);
+    $scope.search = search;
+    $transitions.onSuccess({ to: '*' }, onChange);
+    userSrvc.onLogin(updateLogin);
   }
-
-  function link() {
-    width = $window.innerWidth;
-    angular.element($window).bind('resize', setLinks);
-  }
-
   return {
-    scope: {
-      name: '@',
-      address: '@',
-    },
     controller: ctrl,
-    link,
     templateUrl: 'src/directives/templates/navBar.html',
   };
 }

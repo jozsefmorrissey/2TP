@@ -1,6 +1,6 @@
 const KEYWORD = 'keyword';
 
-exports.hoverSrvc = ($compile, $state, $location, stateSrvc, configSrvc) => {
+exports.hoverSrvc = ($compile, $state, $location, configSrvc) => {
   const obj = {};
   const loadedContent = {};
 
@@ -17,11 +17,11 @@ exports.hoverSrvc = ($compile, $state, $location, stateSrvc, configSrvc) => {
           if (!loadedContent[key]) {
             loadedContent[key] = {};
           }
-          loadedContent[key].data = configSrvc.getTopicHtml('keywords', key);
+          loadedContent[key].data = configSrvc.getKeywordHtml(key);
           return Promise.resolve();
         }
 
-        throw new Error(`${$($element).text()} is an undefined keyword for topic ${stateSrvc.getState()}.`);
+        throw new Error(`${$($element).text()} is an undefined keyword for topic ${configSrvc.getState()}.`);
       }
       default: {
         throw new Error(`Content type '${contentId}' is not defined.`);

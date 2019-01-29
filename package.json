@@ -37,6 +37,7 @@
     "jozsef-lib": "^1.1.0",
     "moment": "^2.18.1",
     "raw-loader": "^0.5.1",
+    "request": "^2.88.0",
     "watchman": "^1.0.0"
   },
   "devDependencies": {

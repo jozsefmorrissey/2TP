@@ -1,6 +1,7 @@
 function editor() {
   let id = 0;
-  function ctrl($scope, $compile, $element, $timeout, configSrvc, errorSrvc) {
+  function ctrl($scope, $compile, $element, $timeout, configSrvc, eventSrvc
+      , promiseSrvc, errorSrvc) {
     $scope.id = id;
     id += 1;
     const identifier = $($element).attr('identifier');
@@ -17,23 +18,31 @@ function editor() {
 
     function updateContent() {
       const emptyMsg = '<pre>&lt;!-- There is no related  content --&gt;</pre>';
-      let content = configSrvc.getTopicInfo($scope.type, $scope.currKey);
+      let key = $scope.currKey;
+      if ($scope.identifier && key === undefined) {
+        key = '';
+      }
+      let content = configSrvc.getTopicInfo($scope.type, key);
       if (content === undefined) {
         content = emptyMsg;
       }
       $(`#${eId}`).val(content);
     }
 
+    let initialize = true;
     function delay() {
-      const trixEditor = $(`<trix-editor id='${eId}'
-                      toolbar='edit-trix-toolbar-${$scope.id}'
-                      angular-trix ng-model="foo"
-                      class="trix-content"
-                      ng-blur='validate()'
-                      ng-focus='onFocus()'></trix-editor>`);
-      $($element).find('.curr-tab-container').html(trixEditor);
-      $compile(trixEditor)($scope);
-      $timeout(updateContent, 250);
+      if (initialize) {
+        const trixEditor = $(`<trix-editor id='${eId}'
+                        toolbar='edit-trix-toolbar-${$scope.id}'
+                        angular-trix ng-model="foo"
+                        class="trix-content"
+                        ng-blur='validate()'
+                        ng-focus='onFocus()'></trix-editor>`);
+        $($element).find('.curr-tab-container').html(trixEditor);
+        $compile(trixEditor)($scope);
+        $timeout(updateContent, 250);
+        initialize = false;
+      }
     }
 
     function saveChanges() {
@@ -50,9 +59,9 @@ function editor() {
         const raw = configSrvc.getTopicRaw($scope.type, $scope.currKey);
         const errors = errorSrvc(raw);
         if (errors.length > 0) {
-          $(`#${eId}`).css({'border-color': 'red'});
+          $(`#${eId}`).css({ 'border-color': 'red' });
         } else {
-          $(`#${eId}`).css({'border-color': 'grey'});
+          $(`#${eId}`).css({ 'border-color': 'grey' });
         }
       }
     }
@@ -73,8 +82,7 @@ function editor() {
       return $scope.$parent[identifier];
     }
 
-    // $timeout(delay, 250);
-    configSrvc.getTopic().then(delay);
+    promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('content'), delay);
     $scope.addKey = addKey;
     $scope.getKeys = getKeys;
   }

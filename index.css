@@ -44,9 +44,13 @@
 }
 
 #footer-wrapper {
-  height: 250px;
+  margin: 2px;
 }
 
 .indent {
   padding-left:  50pt;
+}
+
+hr {
+  border-width: 4pt;
 }

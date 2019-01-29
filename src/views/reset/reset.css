@@ -1,0 +1,14 @@
+#reset-in-ctn {
+  display: inline-grid;
+  text-align: center;
+  margin: auto;
+  width: 25%;
+}
+
+#reset-out-ctn {
+  width: 100%;
+  text-align: center;
+  height: 60%;
+  position: absolute;
+  transform: translate(0%, 50%);
+}

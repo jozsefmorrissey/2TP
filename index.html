@@ -9,6 +9,7 @@
         <script src="//unpkg.com/@uirouter/visualizer@4"></script><!-- Utility, to be deleted for production -->
 
         <script src="index.js"></script><!-- root js file -->
+        <script src="./src/raw/diff-match-patch.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
@@ -31,12 +32,7 @@
             <div ui-view='main' id='main'></div> <!-- angular content injected here  -->
         </div>
 
-
-        <div id="footer-wrapper">
-            <hr class="footer-line">
-            <p> &copy;2017 All rights reserved.</p>
-            <p>Main Website: <a href="https://revature.com/" target="_blank">Revature.com</a></p>
-        </div>
+        <div ui-view='footer'></div>
 
         <div ui-view='edit'></div>
 

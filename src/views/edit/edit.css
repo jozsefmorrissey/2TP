@@ -3,6 +3,10 @@ trix-editor {
   margin: 0 20px 0 20px;
 }
 
+.error {
+  color: red;
+}
+
 #content-editor {
   position: fixed;
   border-top-style: solid;
@@ -23,9 +27,12 @@ trix-editor {
 }
 
 #edit-save-btn {
-  float: right;
   margin: 8pt;
   margin-right: 32pt;
+}
+
+#edit-save-btn:disabled {
+    opacity: 0.6;
 }
 
 #editor-nav {
@@ -46,7 +53,41 @@ trix-toolbggar [data-attribute='code'] {
 }
 
 .open-edit-btn {
-  position: absolute;
-  top: 0;
+  padding: 2pt 5pt 3pt 5pt;
+  background-color: #DBDBDC;
+  margin-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  z-index: 100;
+}
+
+.open-edit-btn-ctn {
+  position: fixed;
+  bottom: 0;
+  top: auto;
+  height: auto;
+/*z-index: -1; TODO: position this div behind others*/
+  width: 100%;
   left: 0;
+  text-align: center;
+}
+
+.right {
+  float: right;
+}
+
+.collapse-ctn {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  text-align: center;
+}
+
+.collapse-inner-ctn {
+  display: inline-grid;
+  padding: 0 5pt 2pt 5pt;
+  position: absolute;
+  background-color: #dbdbdb;
+  margin-top: -5px;
+  border-radius: 0 0 10px 10px;
+  cursor: pointer;
 }

@@ -1,0 +1,7 @@
+<div>
+  <label>Topic</label>
+  <input ng-keydown='$event.keyCode === 13 && topicChange(topic)' ng-model='topic'/>
+  <br>
+  <textarea cols=100 rows='12' ng-keydown='$event.keyCode === 13 && contentChange(content)'
+      ng-model='content' id='test-content'></textarea>
+</div>

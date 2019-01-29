@@ -1,12 +1,21 @@
 {
-  "index": "<div>\n  <div class='center two-thirds'>\n    <h2>Welcome to docker doc</h2>\n    <a ng-click=\"go('jozsef.bash.confidentalInfo')\">\n      Commands\n    </a>\n    <div class='left'>\n      <div ng-repeat='cmd in cmds'>\n        <b>{{cmd}}</b>\n      </div>\n    </div>\n  </div>\n</div>\n",
-  "config": "{\n  \"cmds\": [\n    \"docker run -p $dockerPort:$appPort -ti pass/ub bash\"\n  ]\n}\n",
-  "internalConfig": "{\n  \"urls\": {\n    \"Fun\": \"/test.html\",\n    \"testJson\": \"/test.json\",\n    \"hello\": \"std.docker\"\n  }\n}\n",
-  "style": "test {\n  overflow: hidden;\n}\n",
+  "content": "<div><br></div><pre>&lt;div&gt;\n  &lt;div class='center two-thirds'&gt;\n    &lt;h2&gt;Welcome to docker hello doc&lt;/h2&gt;\n    &lt;a ng-click=\"go('jozsef.bash.confidentalInfo')\"&gt;\n      Commands hello friend\n    &lt;/a&gt;\n    &lt;div class='left'&gt;\n      &lt;div ng-repeat='(key, value) in cmds'&gt;\n        &lt;b&gt;{{key}}&lt;/b&gt;\n        &lt;div class='indent' ng-repeat='(key, value) in value'&gt;\n          &lt;zd&gt;&lt;b&gt; {{key}} &lt;/b&gt; - {{value}}&lt;/zd&gt;\n        &lt;/div&gt;\n      &lt;/div&gt;\n    &lt;/div&gt;\n  &lt;/div&gt;\n&lt;/div&gt;\n<br></pre><div>&nbsp; &nbsp;&nbsp;<br>&nbsp;&nbsp;</div>",
+  "data": "<div>{<br>&nbsp; \"cmds\": {<br>&nbsp; &nbsp; \"docker run\": {<br>&nbsp; &nbsp; &nbsp; \"-v\": \"$presistantPath:$containerPath\",<br>&nbsp; &nbsp; &nbsp; \"-p\": \"$dockerPort:$appPort -ti pass/ub bash\"<br>&nbsp; &nbsp; },<br>&nbsp; &nbsp; \"docker build [OPTIONS] [DIRECTORY]\": {<br>&nbsp; &nbsp; &nbsp; \"--tag\": \"\"<br>&nbsp; &nbsp; }<br>&nbsp; }<br>}<br><br></div>",
+  "links": {
+    "Fun": "/test.html",
+    "testJson": "/test.json",
+    "hello": "jozsef.bash.confidentalInfo"
+  },
+  "css": "<div>.indent {<br>margin-left: 20pt;<br>}</div>",
   "keywords": {
     "-p": "<div>\n  <p>\n    port mapping\n  </p>\n</div>\n",
     "$appPort": "<div>\n  This variable needs to be the port that the server will be running on\n  within the docker container. This port can be determined by running\n  the following command:\n  <br>\n  <br>\n  sudo ./confidentalInfo.sh value confidentalInfo port\n</div>\n",
     "$dockerPort": "<div>\n  <p>\n    This is the port the docker container will connect to the application port\n    and expose on your local.\n  </p>\n</div>\n",
-    "docker": "<b>\n  A light weight container utility for isolating and standardizing\n  the environment in which your application runs.\n  <br>\n  <a href='https://docs.docker.com/'>Docker Website</a>\n</b>\n"
-  }
+    "docker": "<b>\n  A light weight container utility for isolating and standardizing\n  the environment in which your application runs.\n  <br>\n  <a href='https://docs.docker.com/'>Docker Website</a>\n</b>\n",
+    "$presistantPath": "<div>This is the phyiscal path that exists on your device.<br>Relitive paths would not work:</div><ul><li>&nbsp; &nbsp; Linux - prefix path with $(pwd)</li></ul><div><br></div>",
+    "$containerPath": "<div>The file path that exist within the docker container</div>",
+    "-v": "<div>Volume - this argument is used to identifier file locations you wish to bind with a container location.<br>(aka --volume)</div>"
+  },
+  "_keywords": {},
+  "inheritedKeywords": {}
 }

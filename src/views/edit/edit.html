@@ -1,8 +1,12 @@
 <div>
   <link rel='stylesheet' href='/src/views/edit/edit.css'/>
-  <button class='open-edit-btn' ng-click='showEditor = !showEditor'>edit</button>
+  <span class='open-edit-btn-ctn'>
+    <span>
+      <div class="glyphicon glyphicon glyphicon-chevron-up open-edit-btn" ng-click="showEditor = !showEditor"></div>
+    </span>
+  </span>
   <div ng-if='showEditor'>
-    <div id='content-editor' resizable static-id='editor-nav' scroll-id='scroll-section' ng-if='!failure'>
+    <div id='content-editor' resizable static-id='editor-nav' footer-id="footer-wrapper" scroll-id='scroll-section' ng-if='!failure'>
       <div id='editor-nav'>
         <ul id='editor-tab-ctn' class="nav nav-tabs">
           <li><a ng-click='updateState(CONTENT)' href=''>Content</a></li>
@@ -11,7 +15,19 @@
           <li><a ng-click='updateState(LINK)' href=''>Links</a></li>
           <li><a ng-click='updateState(CSS)' href=''>Css</a></li>
         </ul>
-        <button ng-click='save()' id='edit-save-btn'>Save</button>
+        <span class='collapse-ctn'>
+          <span class='collapse-inner-ctn' ng-click="hide()">
+            <div class="glyphicon glyphicon glyphicon-minus"></div>
+            <div class="glyphicon glyphicon glyphicon-minus"></div>
+            <div class="glyphicon glyphicon glyphicon-chevron-down"></div>
+          </span>
+        </span>
+        <span class='right'>
+          <b ng-if='notLoggedIn' class='error'>You must login to save</b>
+          <label>Comment</label>
+          <input ng-model='comment' type='text'/>
+          <button ng-click='save(comment)' ng-disabled='!comment' id='edit-save-btn'>Save</button>
+        </span>
       </div>
       <div id='scroll-section'>
         <div ng-show='tab === KEYWORD'>

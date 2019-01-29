@@ -1,4 +1,4 @@
-function internalLink(configSrvc, $state, stateSrvc) {
+function internalLink(configSrvc, $state) {
   function ctrl($scope, $element, $compile) {
     const keyword = $element.text();
     const sref = configSrvc.getLinks()[keyword];
@@ -7,7 +7,7 @@ function internalLink(configSrvc, $state, stateSrvc) {
     $compile(link)($scope);
 
     function intGo() {
-      stateSrvc.go(sref);
+      $state.go('topic', { topic: sref });
     }
     $scope.intGo = intGo;
   }

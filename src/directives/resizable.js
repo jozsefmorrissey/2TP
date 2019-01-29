@@ -17,6 +17,9 @@ function resizable($document, $timeout) {
         'max-height': trixHeight,
         overflow: 'scroll',
       });
+
+      const footerHeight = $($(`#${scope.footerId}`).children()[0]).height();
+      $(`#${scope.footerId}`).css({ height: dx + footerHeight });
       return false;
     }
 
@@ -59,6 +62,7 @@ function resizable($document, $timeout) {
     scope: {
       staticId: '@',
       scrollId: '@',
+      footerId: '@',
     },
     link: postLink,
   };

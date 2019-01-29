@@ -1,0 +1,23 @@
+.search-in-ctn {
+  display: flex;
+  margin: auto;
+  margin-top: 0;
+  padding: 5px;
+}
+
+.search-out-ctn {
+  position: relative;
+  left: 0;
+  display: inline-block;
+  margin: 0 20px 0 150pt;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.nav-alert {
+  color: red;
+  transform: translate(0, 25%);
+  font-size: 20pt;
+}

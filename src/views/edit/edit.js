@@ -1,4 +1,5 @@
-exports.editCtrl = ($scope, editSrvc, configSrvc) => {
+exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
+      eventSrvc, editSrvc, configSrvc) => {
   $scope.KEYWORD = editSrvc.KEYWORD;
   $scope.CONTENT = editSrvc.CONTENT;
   $scope.DATA = editSrvc.DATA;
@@ -7,20 +8,26 @@ exports.editCtrl = ($scope, editSrvc, configSrvc) => {
   $scope.tab = $scope.CONTENT;
   $scope.intOex = 'external';
 
-  function init() {
-    $scope.showEditor = !configSrvc.hasContent();
-    $scope.keywords = configSrvc.getKeywords();
-    $scope.links = [];
-    const links = configSrvc.getLinks();
-    const keys = Object.keys(links);
-    for (let index = 0; index < keys.length; index += 1) {
-      const key = keys[index];
-      const url = links[key];
-      $scope.links[index] = { key, url };
+  let initialize = true;
+  function setup() {
+    if (initialize) {
+      initialize = false;
+      $scope.showEditor = !configSrvc.hasContent();
+      $scope.keywords = configSrvc.getKeywords();
+      $scope.links = [];
+      const links = configSrvc.getLinks();
+      const keys = Object.keys(links);
+      for (let index = 0; index < keys.length; index += 1) {
+        const key = keys[index];
+        const url = links[key];
+        $scope.links[index] = { key, url };
+      }
     }
   }
 
-  configSrvc.getTopic().then(init);
+  function init() {
+    promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('content'), setup);
+  }
 
   function saveLinks() {
     const linkObj = {};
@@ -67,10 +74,28 @@ exports.editCtrl = ($scope, editSrvc, configSrvc) => {
     return `${word.substr(0, length)}...`;
   }
 
-  function save() {
-    configSrvc.save();
+  function save(comment) {
+    if (userSrvc.isLoggedIn()) {
+      configSrvc.save(comment);
+    } else {
+      $scope.notLoggedIn = true;
+    }
   }
 
+  function hide() {
+    $scope.showEditor = false;
+  }
+
+  function toggleEditor() {
+    $scope.showEditor = !$scope.showEditor;
+  }
+
+  $('#edit-toggle').click(toggleEditor);
+
+  $transitions.onSuccess({ to: 'topic' }, init);
+  $transitions.onBefore({ to: 'topic' }, hide);
+
+  init();
   $scope.save = save;
   $scope.updateState = updateState;
   $scope.shorten = shorten;
@@ -78,5 +103,6 @@ exports.editCtrl = ($scope, editSrvc, configSrvc) => {
   $scope.addKeyword = addKeyword;
   $scope.hasKeywords = hasKeywords;
   $scope.saveLinks = saveLinks;
+  $scope.hide = hide;
   $scope.addLink = addLink;
 };

@@ -1,43 +1,81 @@
-exports.configSrvc = ($http, $state, stateSrvc, errorSrvc) => {
-  const obj = {};
-  let config;
-  let topic;
-  let topicPromise;
-  const updateFuncs = {};
+exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $timeout,
+    errorSrvc, stringMapSrvc, Hash, userSrvc, eventSrvc, promiseSrvc) => {
+  const scope = {};
+  let topicInfo;
+  let serverTopicInfo;
 
-  function onUpdate(attr, func) {
-    if (!updateFuncs[attr]) {
-      updateFuncs[attr] = [];
-    }
-    updateFuncs[attr].push(func);
+  scope.EVENT = 'config-update';
+
+  function getState() {
+    return $stateParams.topic;
   }
 
+  function saveUserVersion() {
+    const user = userSrvc.getUser();
+    const userVersion = { jsonObj: JSON.stringify(topicInfo), id: { pageIdentifier: getState() } };
+    const data = {
+      url: 'http://localhost:9999/version/update',
+      method: 'POST',
+      data: { user, userVersion },
+    };
+    function onError() {
+      errorSrvc(data.url, 'Failed to save user Data.');
+    }
+    $http(data).then(undefined, onError);
+  }
+
+  function getPath() {
+    return getState().replace(/\./g, '/');
+  }
+
+  function getUpdateEvent(attr) {
+    return `${scope.EVENT}-${attr.toLowerCase()}`;
+  }
+
+  const updatePending = {};
   function runUpdateFuncs(attr) {
-    const list = updateFuncs[attr.toLowerCase()];
-    if (list) {
-      for (let index = 0; index < list.length; index += 1) {
-        list[index]();
-      }
+    function triggerUpdate() {
+      eventSrvc.trigger(getUpdateEvent(attr), topicInfo);
+      updatePending[attr] = false;
+    }
+
+    if (!updatePending[attr]) {
+      $timeout(triggerUpdate, 3000);
+    }
+    updatePending[attr] = true;
+  }
+
+  function getCookieTopicId() {
+    return `hlwa.${getState()}`;
+  }
+
+  function indicateChange() {
+    if (Hash(topicInfo) !== Hash(serverTopicInfo)) {
+      errorSrvc('nav-alert', 'Unsaved content');
+      $cookies.put(getCookieTopicId(), JSON.stringify(topicInfo));
+    } else {
+      errorSrvc('nav-alert', null);
     }
   }
 
   function setTopic(resp) {
-    topic = resp.data;
-  }
-
-  function getTopic() {
-    return topicPromise;
-  }
-
-  function getTopics() {
-    if (config) {
-      return Object.keys(config);
+    if (resp[0] && resp[0].status === 200) {
+      topicInfo = resp[0].data;
+    } else if (resp[1]) {
+      topicInfo = resp[1].data;
+    } else {
+      topicInfo = {};
     }
-
-    return undefined;
+    indicateChange();
+    serverTopicInfo = JSON.parse(JSON.stringify(resp[1].data));
   }
 
-  function toHtml(mix) {
+  function toHtml(mixedContent) {
+    if (mixedContent === undefined) {
+      return undefined;
+    }
+    let mix = mixedContent.replace(/<(div|li)>/g, '<$1><zd>');
+    mix = mix.replace(/<\/(div|li)>/g, '</zd></$1>');
     const htmlArr = mix.replace(/(<pre>)|<\/pre>/g, '!!$1').split('!!');
     let html = '';
     for (let index = 0; index < htmlArr.length; index += 1) {
@@ -52,10 +90,10 @@ exports.configSrvc = ($http, $state, stateSrvc, errorSrvc) => {
 
   function getTopicInfo(attr, key) {
     let ret;
-    if (key) {
-      ret = topic[attr.toLowerCase()][key];
+    if (key !== undefined) {
+      ret = topicInfo[attr.toLowerCase()][key];
     } else {
-      ret = topic[attr.toLowerCase()];
+      ret = topicInfo[attr.toLowerCase()];
     }
     if (typeof ret === 'object') {
       return JSON.stringify(ret, null, 2);
@@ -64,12 +102,16 @@ exports.configSrvc = ($http, $state, stateSrvc, errorSrvc) => {
   }
 
   function getTopicRaw(attr, key) {
-    return getTopicInfo(attr, key).replace(/<.*?>|&.*?;/g, '');
+    const info = getTopicInfo(attr, key);
+    if (info !== undefined) {
+      return info.replace(/<.*?>|&.*?;/g, '');
+    }
+    return undefined;
   }
 
   function getTopicHtml(attr, key) {
     const raw = getTopicRaw(attr, key);
-    if (raw.indexOf('@') === 0) {
+    if (raw && raw.indexOf('@') === 0) {
       return getTopicHtml(attr, raw.substr(1));
     }
     return toHtml(getTopicInfo(attr, key));
@@ -80,97 +122,119 @@ exports.configSrvc = ($http, $state, stateSrvc, errorSrvc) => {
     try {
       return JSON.parse(jsonStr);
     } catch (e) {
-      errorSrvc(jsonStr, 'Invalid json object');
+      errorSrvc(jsonStr, 'Invalid json scope.ct');
     }
     return undefined;
-  }
-
-  function equateTypeOf(type1, type2) {
-    let newVal = type1;
-    if (typeof type2 === 'object' && typeof type1 === 'string') {
-      newVal = JSON.parse(type1.replace(/ /g, ''));
-    } else if (typeof type2 === 'string' && typeof type1 === 'object') {
-      newVal = JSON.stringify(type1);
-    }
-
-    return newVal;
   }
 
   function saveTopicInfo(value, attr, key) {
-    if (key) {
-      topic[attr.toLowerCase()][key] = value;
+    if (key !== undefined) {
+      topicInfo[attr.toLowerCase()][key] = value;
     } else {
-      topic[attr.toLowerCase()] = value;
+      topicInfo[attr.toLowerCase()] = value;
     }
+    indicateChange();
     runUpdateFuncs(attr);
+    saveUserVersion();
   }
 
   function keywordContent(keyword) {
-    return topic.keywords[keyword];
+    return topicInfo.keywords[keyword];
   }
 
   function getKeywords() {
-    if (topic) {
-      return Object.keys(topic.keywords);
+    if (topicInfo) {
+      return Object.keys(topicInfo.keywords).sort();
     }
 
     return undefined;
   }
 
+  function getAllKeywords() {
+    let keywords = getKeywords();
+    const inheritedKeywords = Object.keys(topicInfo.inheritedKeywords);
+    keywords = keywords.concat(inheritedKeywords);
+    keywords.sort();
+    return keywords;
+  }
+
+  function getKeywordHtml(key) {
+    const html = getTopicHtml('keywords', key);
+    if (html) {
+      return html;
+    }
+
+    return getTopicHtml('inheritedKeywords', key);
+  }
+
   function getLinks() {
-    return topic.links;
+    return topicInfo.links;
   }
 
   function getCss() {
-    return topic.css;
+    return topicInfo.css;
   }
 
   function hasContent() {
-    const topics = getTopics();
-    return topics && topics.indexOf(stateSrvc.getPath()) > -1;
+    return topicInfo.content;
   }
 
-  function getSref(key) {
-    return config.srefs[key];
-  }
-
-  function save() {
-    function success() {
-      console.log('success');
-    }
+  function save(comment) {
     function failure() {
-      console.log('failure');
+      errorSrvc(topicInfo, 'Failed to save');
     }
+
+    const map = stringMapSrvc(JSON.stringify(topicInfo));
     $http({
-      url: `http://localhost:3100/${stateSrvc.getState()}`,
+      url: `http://localhost:3100/${getState()}`,
       method: 'POST',
-      data: topic,
+      data: { body: topicInfo, comment, map, username: userSrvc.getUser().name },
     })
-    .then(success, failure);
+    .then(undefined, failure);
   }
 
-  function init() {
-    topicPromise = $http.get(`http://localhost:3100/${stateSrvc.getState()}`);
-    topicPromise.then(setTopic);
+  function clear(trans) {
+    const topic = trans.params().topic;
+    const user = userSrvc.getUser();
+    const currentTopicPromise = $http.get(`http://localhost:3100/${topic}`);
+    let userTopicPromise;
+    if (user) {
+      userTopicPromise = $http.get(`http://localhost:9999/version/${user.email}/${topic}`);
+    } else {
+      userTopicPromise = Promise.resolve();
+    }
+
+    promiseSrvc.create(promiseSrvc.types.ALL_COMPLETE, scope.EVENT,
+          [userTopicPromise, currentTopicPromise], setTopic);
   }
 
-  init();
-  stateSrvc.onChange(init);
+  let initialize = true;
+  function init(trans) {
+    if (initialize) {
+      clear(trans);
+      initialize = false;
+    }
+  }
 
-  obj.getSref = getSref;
-  obj.getTopics = getTopics;
-  obj.getKeywords = getKeywords;
-  obj.keywordContent = keywordContent;
-  obj.getTopic = getTopic;
-  obj.saveTopicInfo = saveTopicInfo;
-  obj.getTopicInfo = getTopicInfo;
-  obj.getCss = getCss;
-  obj.getTopicJson = getTopicJson;
-  obj.getTopicRaw = getTopicRaw;
-  obj.getTopicHtml = getTopicHtml;
-  obj.getLinks = getLinks;
-  obj.hasContent = hasContent;
-  obj.save = save;
-  obj.onUpdate = onUpdate;
-  return obj;
+
+  $transitions.onSuccess({ to: '*' }, init);
+  $transitions.onBefore({ to: '*' }, clear);
+
+  scope.getAllKeywords = getAllKeywords;
+  scope.getKeywords = getKeywords;
+  scope.getKeywordHtml = getKeywordHtml;
+  scope.keywordContent = keywordContent;
+  scope.saveTopicInfo = saveTopicInfo;
+  scope.getTopicInfo = getTopicInfo;
+  scope.getCss = getCss;
+  scope.getTopicJson = getTopicJson;
+  scope.getTopicRaw = getTopicRaw;
+  scope.getTopicHtml = getTopicHtml;
+  scope.getLinks = getLinks;
+  scope.hasContent = hasContent;
+  scope.save = save;
+  scope.getUpdateEvent = getUpdateEvent;
+  scope.getState = getState;
+  scope.getPath = getPath;
+  return scope;
 };

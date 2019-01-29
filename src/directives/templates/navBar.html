@@ -1,9 +1,38 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light block">
-  <div class="" id="">
-    <ul class="list-inline text-center">
-      <li ui-if='nav.display' ng-repeat='page in nav.pages track by $index' class="nav-item">
-        <button id='nav-bar-{{page.index}}' ng-if='page' ng-click='go(page.index)' class="nav-link" href="#"><z>{{page.sref}}</z></button>
-      </li>
-    </ul>
-  </div>
-</nav>
+<div>
+  <link rel='stylesheet' href='/src/directives/styles/navBar.css'>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <a class="navbar-brand" href="#">Hidden brand</a>
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item active">
+          <a class="nav-link" ui-sref="home">Home
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" ng-if="topic" id='edit-toggle'>Edit</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <div class='search-out-ctn'>
+        <div class="search-in-ctn">
+          <input ng-model='searchPhrase' class="form-control mr-sm-2 no-margin" type="search" placeholder="Search" aria-label="Search">
+          <button ng-if='!isSref(searchPhrase)' class="btn btn-outline-success my-2 my-sm-0" ng-click='search(searchPhrase)'>Search</button>
+          <button ng-if='isSref(searchPhrase)' class="btn btn-outline-success my-2 my-sm-0" ng-click='go(searchPhrase)'>Go!</button>
+        </div>
+      </div>
+      <span ng-if='errors' class='glyphicon glyphicon-exclamation-sign nav-alert'></span>
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0 float-right">
+        <li class="nav-item">
+          <a ng-if='!loggedIn' class="nav-link" ui-sref="login">Login</a>
+          <a ng-if='loggedIn' class="nav-link" href='' ng-click='logOut()'>Log Out</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
