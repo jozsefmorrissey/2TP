@@ -1,7 +1,9 @@
 exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $timeout,
-    errorSrvc, stringMapSrvc, Hash, userSrvc, eventSrvc, promiseSrvc) => {
+    errorSrvc, stringMapSrvc, Hash, userSrvc, eventSrvc, promiseSrvc,
+    projectPropertySrvc, webSocket) => {
   const scope = {};
   let topicInfo;
+  let topicInfoStr = '';
   let serverTopicInfo;
 
   scope.EVENT = 'config-update';
@@ -10,18 +12,56 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
     return $stateParams.topic;
   }
 
+  function contentChange() {
+    webSocket.sendRequest();
+  }
+
+  function initObject(id) {
+    if (typeof topicInfo[id] !== 'object') {
+      topicInfo[id] = {};
+    }
+  }
+
+  function updateContent(content) {
+    if (typeof content === 'object') {
+      topicInfo = content;
+    } else {
+      topicInfo = JSON.parse(content);
+    }
+
+    initObject('keywords');
+    initObject('inheritedKeywords');
+    initObject('links');
+
+    eventSrvc.trigger(getUpdateEvent('web-socket'), topicInfo);
+    runUpdateFuncs();
+    console.log('CONTENT:' + content)
+  }
+
+  function getContent() {
+    return JSON.stringify(topicInfo);
+  }
+
+
+  function connect(topic) {
+    function connectToSocket() {
+      webSocket.init(getState(), updateContent, getContent);
+    }
+    projectPropertySrvc.onLoad(connectToSocket);
+  }
+
   function saveUserVersion() {
     const user = userSrvc.getUser();
-    const userVersion = { jsonObj: JSON.stringify(topicInfo), id: { pageIdentifier: getState() } };
-    const data = {
-      url: 'http://localhost:9999/version/update',
-      method: 'POST',
-      data: { user, userVersion },
-    };
-    function onError() {
-      errorSrvc(data.url, 'Failed to save user Data.');
-    }
-    $http(data).then(undefined, onError);
+    // const userVersion = { jsonObj: JSON.stringify(topicInfo), id: { pageIdentifier: getState() } };
+    // const data = {
+    //   url: 'http://localhost:9999/version/update',
+    //   method: 'POST',
+    //   data: { user, userVersion },
+    // };
+    // function onError() {
+    //   errorSrvc(data.url, 'Failed to save user Data.');
+    // }
+    // $http(data).then(undefined, onError);
   }
 
   function getPath() {
@@ -29,20 +69,25 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   }
 
   function getUpdateEvent(attr) {
-    return `${scope.EVENT}-${attr.toLowerCase()}`;
+    if (attr) {
+      return `${scope.EVENT}-${attr.toLowerCase()}`;
+    } else {
+      return scope.EVENT;
+    }
   }
 
-  const updatePending = {};
-  function runUpdateFuncs(attr) {
+  let updatePending = false;
+  function runUpdateFuncs() {
     function triggerUpdate() {
-      eventSrvc.trigger(getUpdateEvent(attr), topicInfo);
-      updatePending[attr] = false;
+      eventSrvc.trigger(getUpdateEvent(), topicInfo);
+      updatePending = false;
+      contentChange();
     }
 
-    if (!updatePending[attr]) {
+    if (!updatePending) {
       $timeout(triggerUpdate, 3000);
     }
-    updatePending[attr] = true;
+    updatePending = true;
   }
 
   function getCookieTopicId() {
@@ -52,20 +97,23 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   function indicateChange() {
     if (Hash(topicInfo) !== Hash(serverTopicInfo)) {
       errorSrvc('nav-alert', 'Unsaved content');
-      $cookies.put(getCookieTopicId(), JSON.stringify(topicInfo));
     } else {
       errorSrvc('nav-alert', null);
     }
   }
 
   function setTopic(resp) {
-    if (resp[0] && resp[0].status === 200) {
+    if (resp[0] && resp[0].data && resp[0].status === 200) {
       topicInfo = resp[0].data;
-    } else if (resp[1]) {
+    } else if (resp[1] && resp[1].data) {
       topicInfo = resp[1].data;
     } else {
       topicInfo = {};
     }
+    initObject('keywords');
+    initObject('inheritedKeywords');
+    initObject('links');
+
     indicateChange();
     serverTopicInfo = JSON.parse(JSON.stringify(resp[1].data));
   }
@@ -196,7 +244,8 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   function clear(trans) {
     const topic = trans.params().topic;
     const user = userSrvc.getUser();
-    const currentTopicPromise = $http.get(`http://localhost:3100/${topic}`);
+    const url = projectPropertySrvc.getRestEndPointUrl('ENDPOINT_PAGE');
+    const currentTopicPromise = $http.get(`${url}/${topic}`);
     let userTopicPromise;
     if (user) {
       userTopicPromise = $http.get(`http://localhost:9999/version/${user.email}/${topic}`);
@@ -211,13 +260,18 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   let initialize = true;
   function init(trans) {
     if (initialize) {
-      clear(trans);
-      initialize = false;
+      function afterPropLoad() {
+        clear(trans);
+        initialize = false;
+
+      }
+      projectPropertySrvc.onLoad(afterPropLoad);
     }
   }
 
 
   $transitions.onSuccess({ to: '*' }, init);
+  $transitions.onSuccess({ to: '*' }, connect);
   $transitions.onBefore({ to: '*' }, clear);
 
   scope.getAllKeywords = getAllKeywords;

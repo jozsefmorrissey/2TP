@@ -42,7 +42,6 @@ exports.Hash = () => {
     if (ex === undefined) {
       ex = [];
     }
-    console.log(key);
     switch (typeof unkType) {
       case 'object':
         return objectHash(unkType, ex);

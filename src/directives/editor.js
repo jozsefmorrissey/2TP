@@ -26,7 +26,12 @@ function editor() {
       if (content === undefined) {
         content = emptyMsg;
       }
+      let offset = 0;
+      if ($(`#${eId}`)[0].editor.selectionManager.currentLocationRange) {
+        offset = $(`#${eId}`)[0].editor.selectionManager.currentLocationRange[0].offset
+      }
       $(`#${eId}`).val(content);
+      $(`#${eId}`)[0].editor.setSelectedRange(offset);
     }
 
     let initialize = true;
@@ -82,7 +87,9 @@ function editor() {
       return $scope.$parent[identifier];
     }
 
-    promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('content'), delay);
+    promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent(), delay);
+    eventSrvc.on(configSrvc.getUpdateEvent('web-socket'), updateContent);
+
     $scope.addKey = addKey;
     $scope.getKeys = getKeys;
   }

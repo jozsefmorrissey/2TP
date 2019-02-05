@@ -1,4 +1,5 @@
-exports.userSrvc = ($cookies, requestSrvc, urlConfig, errorSrvc) => {
+exports.userSrvc = ($http, $cookies, requestSrvc, urlConfig, errorSrvc,
+    projectPropertySrvc) => {
   const scope = {};
   const USER_TOKEN = 'hlwa.UserToken';
   const USER_EMAIL = 'hlwa.UserEmail';
@@ -55,15 +56,36 @@ exports.userSrvc = ($cookies, requestSrvc, urlConfig, errorSrvc) => {
 
 
   function register(success, failure, data) {
-    requestSrvc.post(urlConfig.USER_ADD, success, failure, data);
+    const url = projectPropertySrvc.getRestEndPointUrl('ENDPOINT_USER_ADD');
+    const request = {
+      method: 'POST',
+      url,
+      data,
+    };
+
+    $http(request).then(success, failure);
   }
 
   function login(success, failure, data) {
-    requestSrvc.post(urlConfig.USER_LOGIN, loginCallback(success), failure, data);
+    const url = projectPropertySrvc.getRestEndPointUrl('ENDPOINT_USER_LOGIN');
+    const request = {
+      method: 'POST',
+      url,
+      data,
+    };
+
+    $http(request).then(loginCallback(success), failure);
   }
 
   function reset(success, failure, data) {
-    requestSrvc.post(urlConfig.RESET, success, failure, data);
+    const url = projectPropertySrvc.getRestEndPointUrl('ENDPOINT_USER_RESET');
+    const request = {
+      method: 'POST',
+      url,
+      data,
+    };
+
+    $http(request).then(success, failure);
   }
 
   function onLogin(func) {
@@ -73,19 +95,35 @@ exports.userSrvc = ($cookies, requestSrvc, urlConfig, errorSrvc) => {
   }
 
   function updatePassword(success, failure, data) {
-    requestSrvc.post(urlConfig.UPDATE_PASSWORD, success, failure, data);
+    const url = projectPropertySrvc.getRestEndPointUrl('ENDPOINT_USER_UPDATE_PASSWORD');
+    const request = {
+      method: 'POST',
+      url,
+      data,
+    };
+
+    $http(request).then(success, failure);
   }
 
   function loginFailure() {
     errorSrvc('login', 'Failed to login');
   }
 
+  function initialLogin() {
+    if (user) {
+      const url = projectPropertySrvc.getRestEndPointUrl('ENDPOINT_USER_AUTHINTICATE');
+      const request = {
+        method: 'POST',
+        url,
+        data: { email: user.email, userToken: user.userToken },
+      };
+
+      $http(request).then(loginCallback(), loginFailure);
+    }
+  }
 
   getUser();
-  if (user) {
-    requestSrvc.post(urlConfig.AUTHINTICATE, loginCallback(),
-        loginFailure, { email: user.email, userToken: user.userToken });
-  }
+  projectPropertySrvc.onLoad(initialLogin);
 
   scope.register = register;
   scope.login = login;

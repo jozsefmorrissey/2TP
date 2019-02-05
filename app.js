@@ -27,6 +27,7 @@ import { searchSrvc } from './src/services/searchSrvc';
 import { promiseSrvc } from './src/services/promiseSrvc';
 import { webSocket } from './src/services/webSocket';
 import { stringMapSrvc } from './src/services/stringMapSrvc';
+import { projectPropertySrvc } from './src/services/projectPropertySrvc';
 
 
 import { homeCtrl } from './src/views/home/home';
@@ -40,6 +41,8 @@ import { testCtrl } from './src/views/test/test';
 
 const jozsefLib = require('jozsef-lib');
 require('angular-trix');
+
+console.log("aarguments" + process.argv)
 
 function whiteList($sceDelegateProvider) {
   $sceDelegateProvider.resourceUrlWhitelist([
@@ -71,6 +74,7 @@ angular.module('routerApp', [uiRouter, ngCookies, jozsefLib, 'angularTrix'])
   .service('webSocket', webSocket)
   .service('eventSrvc', eventSrvc)
   .service('requestSrvc', requestSrvc)
+  .service('projectPropertySrvc', projectPropertySrvc)
   .config(whiteList)
   .config(($stateProvider) => {
     $stateProvider

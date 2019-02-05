@@ -125,15 +125,11 @@ exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
 
   $transitions.onSuccess({ to: '*' }, transition);
 
-  promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('content'), displayUpdate);
-  promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('data'), displayUpdate);
-  promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('links'), displayUpdate);
-  promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('css'), cssUpdate);
+  promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('config'), displayUpdate);
+  promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('config'), cssUpdate);
 
-  eventSrvc.on(configSrvc.getUpdateEvent('content'), displayUpdate);
-  eventSrvc.on(configSrvc.getUpdateEvent('data'), displayUpdate);
-  eventSrvc.on(configSrvc.getUpdateEvent('links'), displayUpdate);
-  eventSrvc.on(configSrvc.getUpdateEvent('css'), cssUpdate);
+  eventSrvc.on(configSrvc.getUpdateEvent(), displayUpdate);
+  eventSrvc.on(configSrvc.getUpdateEvent(), cssUpdate);
 
 
   init();

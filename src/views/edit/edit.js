@@ -1,5 +1,5 @@
 exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
-      eventSrvc, editSrvc, configSrvc) => {
+      editSrvc, configSrvc) => {
   $scope.KEYWORD = editSrvc.KEYWORD;
   $scope.CONTENT = editSrvc.CONTENT;
   $scope.DATA = editSrvc.DATA;

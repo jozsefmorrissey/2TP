@@ -1,10 +1,10 @@
-exports.webSocket = ($q, $rootScope, userSrvc) => {
+exports.webSocket = ($q, $rootScope, userSrvc, projectPropertySrvc) => {
   // We return this object to anything injecting our service
   const Service = {};
   let orig = '';
   let ws;
 
-  function init(topic, msgCallback, getCurrentMsg) {
+  function init(topic, msgCallback, getCurrentMsg, messageValidate) {
     function disconnect() {
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.close();
@@ -16,22 +16,17 @@ exports.webSocket = ($q, $rootScope, userSrvc) => {
       console.log(`${ws.readyState} === WebSocket.OPEN`)
     }
 
+    function connect() {
+      const url = projectPropertySrvc.getWsEndPointUrl(topic);
+      ws = new WebSocket(url);
+    }
+
     disconnect();
     // Keep all pending requests here until they get responses
     const callbacks = {};
     // Create a unique callback ID to map requests to responses
     let currentCallbackId = 0;
-    // Create our websocket object with the address to the websocket
-    ws = new WebSocket(`ws://localhost:8000/topic/${topic}`);
-    const defaultVal = `<div>
-  <label>Topic</label>
-  <input ng-keydown='$event.keyCode === 13 && topicChange(topic)' ng-model='topic'/>
-  <br>
-  <textarea cols=100 rows='12' id='i-made-a-change'
-ng-keydown='$event.keyCode === 13 && contentChange(content)'
-      ng-model='content' id='test-content' 'so-did-i='false' 'so-did-i='false' 'so-did-i='false'></textarea>
-</div>
-`;
+    projectPropertySrvc.onLoad(connect);
 
     ws.onopen = function(data){
         console.log("Socket has been opened!");
@@ -56,10 +51,7 @@ ng-keydown='$event.keyCode === 13 && contentChange(content)'
         console.log('Sending request', newVal);
         const reqObj = {
           patchObj: diff,
-          user: {
-              token: '12345',
-              email: `user${Math.floor(Math.random() * 10)}`,
-          }
+          user: userSrvc.getUser(),
         }
         ws.send(JSON.stringify(reqObj));
         orig = newVal;
@@ -76,8 +68,10 @@ ng-keydown='$event.keyCode === 13 && contentChange(content)'
           const currentMsg = getCurrentMsg();
           const patch = messageObj.patch;
           const patched = new diff_match_patch().patch_apply(patch, currentMsg);
-          msgCallback(patched[0]);
-          orig = new String(messageObj.content).toString();
+          if (typeof messageValidate === 'function' || messageValidate(patch[0])) {
+            msgCallback(patched[0]);
+            orig = new String(messageObj.content).toString();
+          }
         } else {
           msgCallback(messageObj.content);
           orig = new String(messageObj.content).toString();
