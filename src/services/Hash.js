@@ -16,7 +16,6 @@ exports.Hash = () => {
 
   function objectHash(obj, exclude) {
     if (exclude.indexOf(obj) > -1) {
-      console.log('Excluded');
       return undefined;
     }
     let hash = '';
@@ -31,7 +30,7 @@ exports.Hash = () => {
     return stringHash(hash, true);
   }
 
-  function Hash(unkType, exclude, key) {
+  function Hash(unkType, exclude) {
     if (unkType === null) {
       return 0;
     }

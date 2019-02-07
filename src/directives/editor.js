@@ -26,17 +26,22 @@ function editor() {
       if (content === undefined) {
         content = emptyMsg;
       }
-      let offset = 0;
-      if ($(`#${eId}`)[0].editor.selectionManager.currentLocationRange) {
-        offset = $(`#${eId}`)[0].editor.selectionManager.currentLocationRange[0].offset
+      const jqObj = $(`#${eId}`);
+      if (jqObj) {
+        let offset = 0;
+        if (jqObj[0].editor.selectionManager.currentLocationRange) {
+          offset = jqObj[0].editor.selectionManager.currentLocationRange[0].offset;
+        }
+        jqObj.val(content);
+        jqObj[0].editor.setSelectedRange(offset);
+        jqObj.focus();
       }
-      $(`#${eId}`).val(content);
-      $(`#${eId}`)[0].editor.setSelectedRange(offset);
     }
 
     let initialize = true;
     function delay() {
       if (initialize) {
+        eventSrvc.on(configSrvc.getUpdateEvent('web-socket'), updateContent);
         const trixEditor = $(`<trix-editor id='${eId}'
                         toolbar='edit-trix-toolbar-${$scope.id}'
                         angular-trix ng-model="foo"
@@ -71,6 +76,11 @@ function editor() {
       }
     }
 
+    function focus() {
+      $('#editor-2')[0].editor.setSelectedRange(23, 5);
+      $(`#${eId}`).focus();
+    }
+
     function addKey(key) {
       saveChanges();
       $scope.currKey = key;
@@ -88,10 +98,10 @@ function editor() {
     }
 
     promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent(), delay);
-    eventSrvc.on(configSrvc.getUpdateEvent('web-socket'), updateContent);
 
     $scope.addKey = addKey;
     $scope.getKeys = getKeys;
+    $scope.focus = focus;
   }
   return {
     scope: {

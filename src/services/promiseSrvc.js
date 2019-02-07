@@ -128,7 +128,7 @@ exports.promiseSrvc = () => {
     }
   }
 
-  function parentHasLoaded(identifier) {
+  function parentHasLoaded() {
     let has = false;
 
     function searchIds(tKey) {
@@ -168,7 +168,7 @@ exports.promiseSrvc = () => {
     }
     proms.funcs[identifier] = proms.funcs[identifier] || [];
     proms.funcs[identifier].push(func);
-    const runObj = runFuncs(type, identifier);
+    runFuncs(type, identifier);
     if (parentHasLoaded(identifier)) {
       func(proms[type][identifier].data);
     }

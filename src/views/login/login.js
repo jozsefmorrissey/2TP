@@ -1,4 +1,4 @@
-exports.loginCtrl = ($scope, userSrvc, Hash, webSocket) => {
+exports.loginCtrl = ($scope, userSrvc, Hash) => {
   $scope.user = {};
   function success(msg) {
     function callback(resp) {

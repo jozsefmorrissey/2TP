@@ -82,6 +82,11 @@ exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
     }
   }
 
+  function cssUpdate() {
+    const css = configSrvc.getTopicRaw('css');
+    $('#user-css').text(css);
+  }
+
   function updateContent() {
     const testDiv = $('<div></div>');
     try {
@@ -90,6 +95,7 @@ exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
       const elem = $('#main-content');
       elem.html(configSrvc.getTopicHtml('content'));
       $compile(elem)($scope);
+      cssUpdate();
     } catch (e) {
       $scope.compileError = e;
     }
@@ -113,11 +119,6 @@ exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
     $scope.currPort = window.location.href.replace(/.*:([0-9]*).*/, '$1');
   }
 
-  function cssUpdate() {
-    const css = configSrvc.getTopicRaw('css');
-    $('#user-css').text(css);
-  }
-
   function transition() {
     init();
     return true;
@@ -126,10 +127,8 @@ exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
   $transitions.onSuccess({ to: '*' }, transition);
 
   promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('config'), displayUpdate);
-  promiseSrvc.on(promiseSrvc.types.ALL_COMPLETE, configSrvc.getUpdateEvent('config'), cssUpdate);
 
   eventSrvc.on(configSrvc.getUpdateEvent(), displayUpdate);
-  eventSrvc.on(configSrvc.getUpdateEvent(), cssUpdate);
 
 
   init();

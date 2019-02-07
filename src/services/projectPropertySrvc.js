@@ -1,7 +1,7 @@
 exports.projectPropertySrvc = ($http) => {
   const scope = {};
   let config;
-  let waiting = [];
+  const waiting = [];
   let loaded = false;
 
   function setConfig(resp) {
@@ -13,26 +13,29 @@ exports.projectPropertySrvc = ($http) => {
   }
 
   function getRestEndPointUrl(endPointId) {
-      if (endPointId) {
-        return `${config.REST_SRVC_DOMAIN}:${config.REST_SRVC_PORT}/${config[endPointId]}`;
-      } else {
-        return `${config.REST_SRVC_DOMAIN}:${config.REST_SRVC_PORT}`;
-      }
+    if (endPointId) {
+      return `${config.REST_SRVC_DOMAIN}:${config.REST_SRVC_PORT}/${config[endPointId]}`;
+    }
+    return `${config.REST_SRVC_DOMAIN}:${config.REST_SRVC_PORT}`;
   }
   function getWsEndPointUrl(topic) {
-      return `${config.WEB_SOCKET_DOMAIN}:${config.WEB_SOCKET_PORT}/topic/${topic}`;
+    return `${config.WEB_SOCKET_DOMAIN}:${config.WEB_SOCKET_PORT}/topic/${topic}`;
+  }
+
+  function get(identifier) {
+    return config[identifier];
   }
 
   function configError() {
     // TODO: Create Error Page
   }
 
-  $http.get(`http://localhost:3167/config`).then(setConfig, configError);
+  $http.get('http://localhost:3167/config').then(setConfig, configError);
 
   function onLoad(func) {
     if (typeof func === 'function' && loaded) {
-        func();
-        return;
+      func();
+      return;
     }
 
     if (typeof func === 'function') {
@@ -41,7 +44,8 @@ exports.projectPropertySrvc = ($http) => {
   }
 
   scope.onLoad = onLoad;
+  scope.get = get;
   scope.getWsEndPointUrl = getWsEndPointUrl;
-  scope.getRestEndPointUrl = getRestEndPointUrl
+  scope.getRestEndPointUrl = getRestEndPointUrl;
   return scope;
 };

@@ -3,7 +3,7 @@ exports.testCtrl = ($scope, webSocket) => {
     $('#test-content').val(content);
   }
 
-  function getContent(content) {
+  function getContent() {
     return $('#test-content').val() ? $('#test-content').val() : '';
   }
 
@@ -11,7 +11,7 @@ exports.testCtrl = ($scope, webSocket) => {
     webSocket.init(topic, updateContent, getContent);
   }
 
-  function contentChange(content) {
+  function contentChange() {
     webSocket.sendRequest();
   }
 

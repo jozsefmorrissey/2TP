@@ -3,7 +3,6 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
     projectPropertySrvc, webSocket) => {
   const scope = {};
   let topicInfo;
-  let topicInfoStr = '';
   let serverTopicInfo;
 
   scope.EVENT = 'config-update';
@@ -12,8 +11,29 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
     return $stateParams.topic;
   }
 
+  let updatePending = false;
+  function getUpdateEvent(attr) {
+    if (attr) {
+      return `${scope.EVENT}-${attr.toLowerCase()}`;
+    }
+    return scope.EVENT;
+  }
+
   function contentChange() {
     webSocket.sendRequest();
+  }
+
+  function runUpdateFuncs() {
+    function triggerUpdate() {
+      eventSrvc.trigger(getUpdateEvent(), topicInfo);
+      updatePending = false;
+      contentChange();
+    }
+
+    if (!updatePending) {
+      $timeout(triggerUpdate, 3000);
+    }
+    updatePending = true;
   }
 
   function initObject(id) {
@@ -35,7 +55,6 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
 
     eventSrvc.trigger(getUpdateEvent('web-socket'), topicInfo);
     runUpdateFuncs();
-    console.log('CONTENT:' + content)
   }
 
   function getContent() {
@@ -43,7 +62,7 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   }
 
 
-  function connect(topic) {
+  function connect() {
     function connectToSocket() {
       webSocket.init(getState(), updateContent, getContent);
     }
@@ -51,8 +70,11 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   }
 
   function saveUserVersion() {
-    const user = userSrvc.getUser();
-    // const userVersion = { jsonObj: JSON.stringify(topicInfo), id: { pageIdentifier: getState() } };
+    // const user = userSrvc.getUser();
+    // const userVersion = {
+      //   jsonObj: JSON.stringify(topicInfo),
+      //   id: { pageIdentifier: getState() }
+      // };
     // const data = {
     //   url: 'http://localhost:9999/version/update',
     //   method: 'POST',
@@ -66,32 +88,6 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
 
   function getPath() {
     return getState().replace(/\./g, '/');
-  }
-
-  function getUpdateEvent(attr) {
-    if (attr) {
-      return `${scope.EVENT}-${attr.toLowerCase()}`;
-    } else {
-      return scope.EVENT;
-    }
-  }
-
-  let updatePending = false;
-  function runUpdateFuncs() {
-    function triggerUpdate() {
-      eventSrvc.trigger(getUpdateEvent(), topicInfo);
-      updatePending = false;
-      contentChange();
-    }
-
-    if (!updatePending) {
-      $timeout(triggerUpdate, 3000);
-    }
-    updatePending = true;
-  }
-
-  function getCookieTopicId() {
-    return `hlwa.${getState()}`;
   }
 
   function indicateChange() {
@@ -260,15 +256,12 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   let initialize = true;
   function init(trans) {
     if (initialize) {
-      function afterPropLoad() {
+      projectPropertySrvc.onLoad(() => {
         clear(trans);
         initialize = false;
-
-      }
-      projectPropertySrvc.onLoad(afterPropLoad);
+      });
     }
   }
-
 
   $transitions.onSuccess({ to: '*' }, init);
   $transitions.onSuccess({ to: '*' }, connect);

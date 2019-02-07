@@ -1,5 +1,5 @@
 exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
-      editSrvc, configSrvc) => {
+      editSrvc, configSrvc, eventSrvc) => {
   $scope.KEYWORD = editSrvc.KEYWORD;
   $scope.CONTENT = editSrvc.CONTENT;
   $scope.DATA = editSrvc.DATA;
@@ -8,20 +8,16 @@ exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
   $scope.tab = $scope.CONTENT;
   $scope.intOex = 'external';
 
-  let initialize = true;
   function setup() {
-    if (initialize) {
-      initialize = false;
-      $scope.showEditor = !configSrvc.hasContent();
-      $scope.keywords = configSrvc.getKeywords();
-      $scope.links = [];
-      const links = configSrvc.getLinks();
-      const keys = Object.keys(links);
-      for (let index = 0; index < keys.length; index += 1) {
-        const key = keys[index];
-        const url = links[key];
-        $scope.links[index] = { key, url };
-      }
+    $scope.showEditor = !configSrvc.hasContent();
+    $scope.keywords = configSrvc.getKeywords();
+    $scope.links = [];
+    const links = configSrvc.getLinks();
+    const keys = Object.keys(links);
+    for (let index = 0; index < keys.length; index += 1) {
+      const key = keys[index];
+      const url = links[key];
+      $scope.links[index] = { key, url };
     }
   }
 
@@ -94,6 +90,7 @@ exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
 
   $transitions.onSuccess({ to: 'topic' }, init);
   $transitions.onBefore({ to: 'topic' }, hide);
+  eventSrvc.on(configSrvc.getUpdateEvent('web-socket'), setup);
 
   init();
   $scope.save = save;
