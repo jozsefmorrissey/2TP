@@ -26,6 +26,7 @@
     "angular-trix": "^1.0.2",
     "angular-ui-router": "^1.0.3",
     "angular-ui-tinymce": "0.0.19",
+    "diff-match-patch": "^1.0.4",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-loader": "^1.7.1",

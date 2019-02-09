@@ -1,9 +1,10 @@
+import DiffMatchPatch from 'diff-match-patch';
+
 exports.webSocket = ($q, $rootScope, userSrvc, projectPropertySrvc, logger) => {
   // We return this object to anything injecting our service
   const Service = {};
   let orig = '';
   let ws;
-  const DiffMatchPatch = diff_match_patch;
 
   function init(topic, msgCallback, getCurrentMsg, messageValidate) {
     function disconnect() {
