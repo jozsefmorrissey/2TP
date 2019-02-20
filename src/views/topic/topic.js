@@ -1,5 +1,7 @@
 exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
     configSrvc, eventSrvc, domAop, $transitions, promiseSrvc) => {
+  let initialize = true;
+
   function longestFirst(a, b) {
     return b.length - a.length;
   }
@@ -102,6 +104,10 @@ exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
   }
 
   function displayUpdate() {
+    if (initialize) {
+      eventSrvc.on(configSrvc.getUpdateEvent('web-socket'), updateContent);
+      initialize = false;
+    }
     updateData();
     shortDesc();
     updateContent();

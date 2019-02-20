@@ -27,7 +27,7 @@ function editor() {
         content = emptyMsg;
       }
       const jqObj = $(`#${eId}`);
-      if (jqObj) {
+      if (jqObj && jqObj[0]) {
         let offset = 0;
         if (jqObj[0].editor.selectionManager.currentLocationRange) {
           offset = jqObj[0].editor.selectionManager.currentLocationRange[0].offset;

@@ -8,8 +8,13 @@ exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
   $scope.tab = $scope.CONTENT;
   $scope.intOex = 'external';
 
+  let initialized = false;
+
   function setup() {
-    $scope.showEditor = !configSrvc.hasContent();
+    if (initialized) {
+      $scope.showEditor = !configSrvc.hasContent();
+      initialized = true;
+    }
     $scope.keywords = configSrvc.getKeywords();
     $scope.links = [];
     const links = configSrvc.getLinks();
