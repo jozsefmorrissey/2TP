@@ -1,4 +1,6 @@
-const path = require('path');
+var path = require('path');
+var webpack = require('webpack');
+var UnminifiedWebpackPlugin = require('unminified-webpack-plugin');
 
 // const WatchLiveReloadPlugin = require('webpack-watch-livereload-plugin');
 
@@ -6,7 +8,24 @@ const path = require('path');
 const config = {
   context: path.join(__dirname),
   devtool: 'cheap-eval-source-map',
-  entry: './app',
+  devServer: {
+    open: true,
+    disableHostCheck: true,
+    host: require("ip").address(),
+    // headers: {
+    //     "Access-Control-Allow-Origin": "http://32.210.111.221:3000",
+    //     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+    //     "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
+    //     "Access-Control-Allow-Origin": "*"
+    // },
+  },
+  entry: {
+    "index": './app.js'
+  },
+      // 'webpack-dev-server/client?http://' + require("ip").address() + ':3000/',
+  //     'webpack/hot/only-dev-server',
+  //     path.resolve(__dirname, './app')
+  // ],
   output: {
     path: path.join(__dirname),
     filename: 'index.js'
@@ -31,6 +50,12 @@ const config = {
   watchOptions: {
     poll: true
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /.*\.js$/,
+      minimize: true
+    })
+  ]
   // plugins: [
   //   new webpack.HotModuleReplacementPlugin(),
   //   new HtmlWebpackPlugin({

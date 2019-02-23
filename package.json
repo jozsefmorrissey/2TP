@@ -37,11 +37,13 @@
     "fs": "0.0.1-security",
     "fusioncharts": "3.12.0",
     "html-webpack-plugin": "^3.2.0",
+    "ip": "^1.1.5",
     "jozsef-lib": "^1.1.2",
     "logger": "0.0.1",
     "moment": "^2.18.1",
     "raw-loader": "^0.5.1",
     "request": "^2.88.0",
+    "unminified-webpack-plugin": "^2.0.0",
     "watch": "^1.0.2",
     "watchman": "^1.0.0",
     "webpack-log": "^2.0.0"
