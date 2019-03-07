@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const Promise = require('bluebird');
 
 const searchMap = require('./info/searchMap.json');
+const config = require('./webapp/hlwa/src/constants/config.js').config;
+console.log(config.PORT);
 
 fs.readFileAsync = Promise.promisify(fs.readFile);
 
@@ -37,6 +39,7 @@ function allowCrossDomain(req, res, next) {
 }
 
 var app = express();
+app.use(express.static('webapp'))
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(allowCrossDomain);
@@ -188,12 +191,12 @@ function saveTopicJson(id, data, comment, res) {
   log(bckup, data);
 }
 
-app.get('/:id', function (req, res) {
+app.get(`/${config.ENDPOINT_PAGE}:id`, function (req, res) {
   const id = req.params.id;
   sendTopicJson(idToPath(id), res);
 });
 
-app.post('/:id', function (req, res) {
+app.post(`/${config.ENDPOINT_PAGE}:id`, function (req, res) {
   const id = req.params.id;
   const data = req.body.body;
   const comment = req.body.comment;
@@ -202,7 +205,7 @@ app.post('/:id', function (req, res) {
   saveUpdateMap(id, map);
 });
 
-app.post('/info/search', function(req, res) {
+app.post(`/${config.ENDPOINT_SEARCH}`, function(req, res) {
   const searchTerms = req.body.searchTerms;
   const startIndex = req.body.startIndex;
   const resultCount = req.body.resultCount;
@@ -211,12 +214,12 @@ app.post('/info/search', function(req, res) {
   res.send(searchResults);
 });
 
-app.get('/topic/children', function (req, res){
+app.get(`/${config.ENDPOINT_CHILDREN}`, function (req, res){
   res.setHeader('Content-Type', 'application/json');
   res.send(Object.keys(topicTree));
 });
 
-app.get('/topic/children/:id', function (req, res){
+app.get(`/${config.ENDPOINT_CHILDREN}:id`, function (req, res){
   const ids = req.params.id.split('.');
   res.setHeader('Content-Type', 'application/json');
   let node = topicTree;
@@ -234,4 +237,4 @@ app.get('/topic/children/:id', function (req, res){
 //
 // });
 
-app.listen(3100, function(){});
+app.listen(config.PORT, function(){});

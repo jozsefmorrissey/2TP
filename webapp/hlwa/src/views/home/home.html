@@ -1,0 +1,15 @@
+<div>
+  <link rel='stylesheet' href='src/views/home/home.css'>
+  <div class='center'>
+    <h2>Welcom to hlwa</h2>
+    <p>The key based open onlined documentation system</p>
+    <h2><a ng-click='back()' href>..</a></h2>
+    <div class='link-ctn' ng-repeat='child in children'>
+      <span class='link-padding'>
+        <h2><a ng-click='go(child)' href>{{child}}</a></h2>
+        &nbsp;&nbsp;
+        <h2><a ng-click='toChildren(child)' href>-></a></h2>
+      </span>
+    </div>
+  </div>
+</div>

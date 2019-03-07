@@ -8,7 +8,8 @@
   "rules": {
     "react/no-unused-prop-types": [2, { "skipShapeProps": true }],
     "linebreak-style": 0,
-    "no-bitwise": ["error", { "allow": ["<<", "|=", "&="] }]
+    "no-bitwise": ["error", { "allow": ["<<", "|=", "&="] }],
+    "prefer-rest-params": "off"
   },
   "env": {
     "browser": true,

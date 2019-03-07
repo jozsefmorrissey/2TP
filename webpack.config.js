@@ -20,7 +20,7 @@ const config = {
     // },
   },
   entry: {
-    "index": './app.js'
+    "index": './webapp/hlwa/app.js'
   },
       // 'webpack-dev-server/client?http://' + require("ip").address() + ':3000/',
   //     'webpack/hot/only-dev-server',
@@ -28,7 +28,7 @@ const config = {
   // ],
   output: {
     path: path.join(__dirname),
-    filename: 'index.js'
+    filename: '/webapp/hlwa/index.js'
   },
   resolve: {
     extensions: ['', '.js']

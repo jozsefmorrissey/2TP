@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./mapHtmls.js & webpack-dev-server --watch --progress --colors --hot --inline --port 3000",
+    "start": "node ./server.js & webpack-dev-server --watch --progress --colors --hot --inline --port 3000",
     "watch": "webpack --watch",
     "build": "webpack --optimize-minimize"
   },
@@ -43,7 +43,7 @@
     "moment": "^2.18.1",
     "raw-loader": "^0.5.1",
     "request": "^2.88.0",
-    "unminified-webpack-plugin": "^2.0.0",
+    "stack-trace": "0.0.10",
     "watch": "^1.0.2",
     "watchman": "^1.0.0",
     "webpack-log": "^2.0.0"

@@ -1,0 +1,47 @@
+<div>
+  <link rel='stylesheet' href='src/views/login/login.css'>
+  <div id='outer-login-ctn'>
+    <div id='login-ctn'>
+      <div>
+        <div ng-if='success' class='req-msg req-success'>
+          {{success}}
+        </div>
+        <div ng-if='failure' class='req-msg req-failure'>
+          {{failure}}
+        </div>
+      </div>
+
+      <div>
+        <h4 ng-if='states.LOGIN == state'>Login</h4>
+        <h4 ng-if='states.REGISTER == state'>Register</h4>
+        <h4 ng-if='states.FORGOT == state'>Forgot Password</h4>
+      </div>
+
+      <input ng-class='{"input-error": (!validateEmail()) && submitted}'
+          ng-model='user.email' placeholder="email"/>
+      <input ng-class='{"input-error": !validatePassword() && submitted}'
+          ng-if='states.FORGOT != state' ng-model='user.password'
+          placeholder="password" type="password"/>
+      <a ng-if='states.LOGIN == state' href=''
+          ng-click='toggle(states.FORGOT)'>
+        Forgot Password?
+      </a>
+      <input ng-class='{"input-error": !validateName() && submitted}'; ng-if='states.REGISTER == state'
+          ng-model='user.name' placeholder="name"/>
+
+      <div>
+        <button ng-click='submit()'>Submit</button>
+        <div>
+          <a ng-if='states.LOGIN == state' ng-click='toggle(states.REGISTER)' href=''>
+            Register
+          </a>
+        </div>
+        <div>
+          <a ng-if='states.LOGIN != state' ng-click='toggle(states.LOGIN)' href=''>
+            Back to login
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
