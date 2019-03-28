@@ -1,6 +1,6 @@
 const KEYWORD = 'keyword';
 
-exports.hoverSrvc = ($compile, $state, $location, configSrvc, logger) => {
+exports.hoverSrvc = ($timeout, $compile, $state, $location, configSrvc, logger) => {
   const obj = {};
   const loadedContent = {};
 
@@ -19,6 +19,9 @@ exports.hoverSrvc = ($compile, $state, $location, configSrvc, logger) => {
           }
           loadedContent[key].data = configSrvc.getKeywordHtml(key);
           logger.debug({ keyword, key, content: loadedContent[key] });
+          if (loadedContent[key].data) {
+            return;
+          }
         }
 
         throw new Error(`${$($element).text()} is an undefined keyword for topic ${configSrvc.getState()}.`);
@@ -47,9 +50,13 @@ exports.hoverSrvc = ($compile, $state, $location, configSrvc, logger) => {
       $(`#${id}`).hide();
     }
 
+    function compile() {
+      $compile($(`#${id}`))(scope);
+    }
+
     loadedContent[key].data = configSrvc.getTopicHtml('keywords', key);
     $(`#${id}`).find('.hover-inner').html(loadedContent[key].data);
-    $compile($(`#${id}`))(scope);
+    $timeout(compile, 100);
     return loadedContent[key][name];
   }
 

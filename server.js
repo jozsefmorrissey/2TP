@@ -6,6 +6,7 @@ const Promise = require('bluebird');
 
 const searchMap = require('./info/searchMap.json');
 const config = require('./webapp/hlwa/src/constants/config.js').config;
+const mapSrvc = require('./webapp/hlwa/src/services/stringMapSrvc');
 console.log(config.PORT);
 
 fs.readFileAsync = Promise.promisify(fs.readFile);
@@ -197,12 +198,17 @@ app.get(`/${config.ENDPOINT_PAGE}:id`, function (req, res) {
 });
 
 app.post(`/${config.ENDPOINT_PAGE}:id`, function (req, res) {
-  const id = req.params.id;
-  const data = req.body.body;
-  const comment = req.body.comment;
-  const map = req.body.map;
-  saveTopicJson(idToPath(id), data, comment, res);
-  saveUpdateMap(id, map);
+  // TODO: user verification
+  try {
+    const id = req.params.id;
+    const data = req.body.body;
+    const comment = req.body.comment;
+    const map = mapSrvc.stringMapSrvc(req.body.body);
+    saveTopicJson(idToPath(id), JSON.parse(data), comment, res);
+    saveUpdateMap(id, map);
+  } catch (e) {
+    res.send(e);
+  }
 });
 
 app.post(`/${config.ENDPOINT_SEARCH}`, function(req, res) {

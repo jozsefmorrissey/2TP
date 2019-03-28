@@ -6,6 +6,7 @@ import ngCookies from 'angular-cookies';
 import { config } from './src/constants/config';
 
 import { unique } from './src/filters/unique';
+import { range } from './src/filters/range';
 
 import { hoverResource } from './src/directives/hoverResource';
 import { navBar } from './src/directives/navBar';
@@ -50,6 +51,7 @@ function whiteList($sceDelegateProvider) {
 
 angular.module('routerApp', [uiRouter, ngCookies, jozsefLib, 'angularTrix'])
   .filter('unique', unique)
+  .filter('range', range)
   .constant('config', config)
   .directive('hoverResource', hoverResource)
   .directive('navBar', navBar)

@@ -44,7 +44,9 @@ exports.webSocket = ($q, $rootScope, userSrvc, config, logger) => {
 
       ws.onopen = () => {
         logger.info('Socket has been opened!');
-        ws.send(JSON.stringify(userSrvc.getUser()));
+        let userObj = userSrvc.getUser();
+        let userObjStr = userObj ? JSON.stringify(userObj) : '{}';
+        ws.send(userObjStr);
       };
 
       ws.onmessage = (message) => {
@@ -77,7 +79,7 @@ exports.webSocket = ($q, $rootScope, userSrvc, config, logger) => {
 
     Service.sendRequest = sendRequest;
     Service.disconnect = disconnect;
-    Service.connect = connect;
+    connect();
   }
 
   Service.init = init;

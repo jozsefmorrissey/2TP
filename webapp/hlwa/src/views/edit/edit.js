@@ -13,6 +13,9 @@ exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
   function setup() {
     if (initialized) {
       $scope.showEditor = !configSrvc.hasContent();
+      if ($scope.showEditor) {
+        configSrvc.connect();
+      }
       initialized = true;
     }
     $scope.keywords = configSrvc.getKeywords();
@@ -73,13 +76,14 @@ exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
 
   function toggleEditor() {
     $scope.showEditor = !$scope.showEditor;
+    configSrvc.connect();
   }
 
   $('#edit-toggle').click(toggleEditor);
 
   $transitions.onSuccess({ to: 'topic' }, init);
   $transitions.onBefore({ to: 'topic' }, hide);
-  eventSrvc.on(configSrvc.getUpdateEvent('web-socket'), setup);
+  eventSrvc.on(configSrvc.getUpdateEvent(), setup);
 
   init();
   $scope.save = save;
@@ -88,5 +92,6 @@ exports.editCtrl = ($scope, $transitions, $timeout, promiseSrvc, userSrvc,
   $scope.hasKeywords = hasKeywords;
   $scope.saveLinks = saveLinks;
   $scope.hide = hide;
+  $scope.toggleEditor = toggleEditor;
   $scope.addLink = addLink;
 };

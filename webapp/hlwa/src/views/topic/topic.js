@@ -46,7 +46,7 @@ exports.topicCtrl = ($scope, $rootScope, $state, $compile, $injector,
     }
 
     if ($injector.has(`${directiveId}Directive`)) {
-      domAop.hover('h1,h2,h3,h4,h5,u,i,b,p,h,zd', onHover, 'topic-aop');
+      domAop.hover('u,i,b,p,h,zd', onHover, 'topic-aop');
     } else {
       throw new Error(`${directive} is not a valid Directive`);
     }

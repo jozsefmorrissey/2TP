@@ -2,7 +2,7 @@
   <link rel='stylesheet' href='src/views/edit/edit.css'/>
   <span class='open-edit-btn-ctn'>
     <span>
-      <div class="glyphicon glyphicon glyphicon-chevron-up open-edit-btn" ng-click="showEditor = !showEditor"></div>
+      <div class="glyphicon glyphicon glyphicon-chevron-up open-edit-btn" ng-click="toggleEditor()"></div>
     </span>
   </span>
   <div ng-if='showEditor'>
@@ -16,7 +16,7 @@
           <li><a ng-click='updateState(CSS)' href=''>Css</a></li>
         </ul>
         <span class='collapse-ctn'>
-          <span class='collapse-inner-ctn' ng-click="hide()">
+          <span class='collapse-inner-ctn' ng-click="toggleEditor()">
             <div class="glyphicon glyphicon glyphicon-minus"></div>
             <div class="glyphicon glyphicon glyphicon-minus"></div>
             <div class="glyphicon glyphicon glyphicon-chevron-down"></div>

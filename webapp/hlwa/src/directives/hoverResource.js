@@ -1,7 +1,9 @@
 let hoverCount = 0;
-function hoverResource(hoverSrvc, logger) {
+let zIndex = 5;
+function hoverResource($compile, hoverSrvc, logger) {
   function hideAll() {
     $('.hover-outer').hide();
+    zIndex = 5;
   }
   $(document).click(hideAll);
 
@@ -24,7 +26,8 @@ function hoverResource(hoverSrvc, logger) {
       $scope.close = close;
     }
 
-    hoverSrvc.getContent($element, hoverId, 'keyword').then(compileContent);
+    hoverSrvc.getContent($element, hoverId, 'keyword');
+    compileContent();
 
     function positionText() {
       const offset = $(`#${switchId}`).offset();
@@ -38,6 +41,7 @@ function hoverResource(hoverSrvc, logger) {
       const css = {
         cursor: 'pointer',
         position: 'absolute',
+        "z-index": zIndex++,
         left,
         width,
         top,

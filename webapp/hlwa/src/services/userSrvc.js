@@ -57,7 +57,7 @@ exports.userSrvc = ($http, $cookies, errorSrvc, config) => {
   function register(success, failure, data) {
     const request = {
       method: 'POST',
-      url: config.ENDPOINT_USER_ADD,
+      url: config.URL_USER_ADD,
       data,
     };
 
@@ -67,7 +67,7 @@ exports.userSrvc = ($http, $cookies, errorSrvc, config) => {
   function login(success, failure, data) {
     const request = {
       method: 'POST',
-      url: config.ENDPOINT_USER_LOGIN,
+      url: config.URL_USER_LOGIN,
       data,
     };
 
@@ -77,7 +77,7 @@ exports.userSrvc = ($http, $cookies, errorSrvc, config) => {
   function reset(success, failure, data) {
     const request = {
       method: 'POST',
-      url: config.ENDPOINT_USER_RESET,
+      url: config.URL_USER_RESET,
       data,
     };
 
@@ -93,7 +93,7 @@ exports.userSrvc = ($http, $cookies, errorSrvc, config) => {
   function updatePassword(success, failure, data) {
     const request = {
       method: 'POST',
-      url: config.ENDPOINT_USER_UPDATE_PASSWORD,
+      url: config.URL_USER_UPDATE_PASSWORD,
       data,
     };
 
@@ -108,7 +108,7 @@ exports.userSrvc = ($http, $cookies, errorSrvc, config) => {
     if (user) {
       const request = {
         method: 'POST',
-        url: config.ENDPOINT_USER_AUTHINTICATE,
+        url: config.URL_USER_AUTHINTICATE,
         data: { email: user.email, userToken: user.userToken },
       };
 

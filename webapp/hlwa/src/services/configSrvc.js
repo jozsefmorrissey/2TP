@@ -4,6 +4,7 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   const scope = {};
   let topicInfo;
   let serverTopicInfo;
+  let connected = false;
 
   scope.EVENT = 'config-update';
 
@@ -62,9 +63,11 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
     return JSON.stringify(topicInfo);
   }
 
-
   function connect() {
-    webSocket.init(getState(), updateContent, getContent);
+    if (!connected) {
+      webSocket.init(getState(), updateContent, getContent);
+      connected = true;
+    }
   }
 
   function saveUserVersion() {
@@ -257,7 +260,6 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   }
 
   $transitions.onSuccess({ to: '*' }, init);
-  $transitions.onSuccess({ to: '*' }, connect);
   $transitions.onBefore({ to: '*' }, clear);
 
   scope.getAllKeywords = getAllKeywords;
@@ -276,5 +278,6 @@ exports.configSrvc = ($http, $state, $stateParams, $transitions, $cookies, $time
   scope.getUpdateEvent = getUpdateEvent;
   scope.getState = getState;
   scope.getPath = getPath;
+  scope.connect = connect;
   return scope;
 };
